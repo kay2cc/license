@@ -1,0 +1,44 @@
+*.class
+.project
+
+# MAC OS X
+*/.DS_Store
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+.idea/
+# Package Files #
+*.swp
+*.war
+*.ear
+*.iml
+*.ipr
+*.iws
+*.ids
+*.log
+*.pyc
+*.eml
+*.classpath
+*.eml
+.git-credentials
+/bin
+.settings
+junit
+.gradle
+build
+gradle/
+.eml
+
+# special file
+*.exec
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+/rel/
+/dist/
+/build-my.xml
+/out/
+/src/main/webapp/ROOT
+/src/main/webapp/WEB-INF/classes
+/src/main/webapp/WEB-INF/lib
+/classes
