@@ -29,13 +29,20 @@ public class LicenseMain {
         }
     }
 
-    private String generate(String key) throws Exception {
+    /**
+     * 生成激活码
+     * @param key
+     * @return
+     * @throws Exception
+     */
+    public String generate(String key) throws Exception {
         key = key.replaceAll("-", "");
         String head = key.substring(0, 4);
         String end = key.substring(key.length() - 8);
         String md5 = SecureUtil.md5(end + head).substring(0, 16).toUpperCase();
         return StrUtil.format("{}-{}-{}", md5.substring(0, 4), md5.substring(4, 8), md5.substring(md5.length() - 8));
     }
+
 
     private static void console(String log) {
         System.out.println(log);
