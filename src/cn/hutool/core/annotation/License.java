@@ -95,6 +95,12 @@ public class License {
         props = new Props(this.configPath);
     }
 
+    public void setLicense(String license){
+        props.setProperty("license", license);
+        props.store(configPath);
+        props.load();
+    }
+
     public String getConfigPath() {
         return configPath;
     }
