@@ -1,13 +1,5 @@
-import cn.hutool.core.annotation.License;
-import cn.hutool.core.annotation.LicenseException;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.setting.dialect.Props;
-
-import javax.swing.*;
-import java.util.Scanner;
-
 public class LicenseMain {
+/*
 
     public static void main(String[] args) {
         // 3137-CSZH-30463131
@@ -29,12 +21,14 @@ public class LicenseMain {
         }
     }
 
-    /**
+    */
+/**
      * 生成激活码
      * @param key
      * @return
      * @throws Exception
-     */
+     *//*
+
     public String generate(String key) throws Exception {
         key = key.replaceAll("-", "");
         String head = key.substring(0, 4);
@@ -42,6 +36,7 @@ public class LicenseMain {
         String md5 = SecureUtil.md5(end + head).substring(0, 16).toUpperCase();
         return StrUtil.format("{}-{}-{}", md5.substring(0, 4), md5.substring(4, 8), md5.substring(md5.length() - 8));
     }
+*/
 
 
     private static void console(String log) {
