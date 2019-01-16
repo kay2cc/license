@@ -1,7 +1,6 @@
 package cn.hutool.core.annotation;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Properties;
 import java.util.Scanner;
@@ -40,7 +39,7 @@ public class License {
         }
     }
 
-    public boolean check() throws LicenseException {
+    public boolean check() throws LicenseException, UnsupportedEncodingException {
         String license = getLicense();
         if (isEmpty(license)){
             return false;
@@ -55,7 +54,7 @@ public class License {
      * @return
      * @throws LicenseException
      */
-    public boolean activation(String key) throws LicenseException {
+    public boolean activation(String key) throws LicenseException, UnsupportedEncodingException {
         log("文件中激活码: " + key);
         if(isEmpty(key)){
             throw new LicenseException("获取激活码.");
@@ -106,7 +105,7 @@ public class License {
     private String encrypt(String dataStr) {
         try {
             MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update(dataStr.getBytes(StandardCharsets.UTF_8));
+            m.update(dataStr.getBytes());
             byte[] s = m.digest();
             StringBuilder result = new StringBuilder();
             for (byte b : s) {
@@ -174,15 +173,12 @@ public class License {
         return out;
     }
 
-    private static byte[] bytes(CharSequence str) {
+    private static byte[] bytes(CharSequence str) throws UnsupportedEncodingException {
         if (str == null) {
             return null;
         }
 
-        if (null == StandardCharsets.UTF_8) {
-            return str.toString().getBytes();
-        }
-        return str.toString().getBytes(StandardCharsets.UTF_8);
+        return str.toString().getBytes("UTF-8");
     }
 
 }
