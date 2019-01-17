@@ -1,26 +1,31 @@
 import cn.hutool.core.annotation.License;
-import cn.hutool.core.annotation.LicenseException;
-
-import java.io.IOException;
 
 /**
  * @author kaiccc
  * @date 2019-01-16 13:46
  */
 public class Main {
-    public static void main(String[] args) throws LicenseException, IOException {
+    public static void main(String[] args) throws Exception {
 
         License license = new License();
 
-        System.out.println(license.generate());
-        license.setLicense("A3D2-A3C3-2902E53D");
-        System.out.println(license.check());
+//        license.dateCheck("1801");
 
-        String licenseMsg = String.format("软件未授权激活。\n" +
-                "机器码：\n%s \n" +
-                "\n请将机器码发送给xxx，申请软件授权码。\n\n" +
-                "如有激活码请点击   “进行激活”。\n\n\n", license.generate());
 
-        System.out.println(licenseMsg);
+//        String lic = license.generate();
+//
+//        license.setLicense(license.generate(lic));
+        System.out.println("check: " +license.check());
+
+    }
+
+    public String generate(String key, License license ) {
+        key = key.replaceAll("-", "");
+        // 时间戳
+        String head = key.substring(4, 8);
+
+        String end = key.substring(key.length() - 8);
+        String md5 = license.encrypt(end + head).substring(0, 16).toUpperCase();
+        return String.format("%s-%s-%s", md5.substring(0, 4), md5.substring(4, 8), md5.substring(md5.length() - 8));
     }
 }
