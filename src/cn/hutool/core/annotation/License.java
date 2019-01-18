@@ -27,7 +27,7 @@ public class License {
         try {
             String data = encrypt(salt + cpuCode).toUpperCase();
 
-            String key = String.format("%s-%s-%s", cpuCode.substring(0, 4), salt, data.substring(data.length() - 8));
+            String key = String.format("%s-%s-%s", cpuCode.substring(cpuCode.length()-10, cpuCode.length()-6), salt, data.substring(data.length() - 8));
             log("机器码: " + key);
             return key;
         } catch (Exception e) {
@@ -144,7 +144,7 @@ public class License {
         return "";
     }
 
-    private boolean isEmpty(CharSequence str) {
+    public boolean isEmpty(CharSequence str) {
         return str == null || str.length() == 0;
     }
 
