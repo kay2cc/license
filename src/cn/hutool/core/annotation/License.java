@@ -18,14 +18,13 @@ public class License {
      * @return
      * @throws LicenseException
      */
-    public String generate() throws LicenseException {
+    public String generate(String salt) throws LicenseException {
         String cpuCode = this.getCPUCode();
         if (isEmpty(cpuCode)) {
             throw new LicenseException("获取硬件码失败");
         }
 
         try {
-            String salt = now();
             String data = encrypt(salt + cpuCode).toUpperCase();
 
             String key = String.format("%s-%s-%s", cpuCode.substring(0, 4), salt, data.substring(data.length() - 8));
@@ -37,42 +36,44 @@ public class License {
         }
     }
 
+    public String generate() throws LicenseException {
+        return generate(now());
+    }
+
     public boolean check() throws LicenseException, ParseException {
         String license = getLicense();
         if (isEmpty(license)) {
             return false;
         }
-        return activation(license);
+        String[] keys = license.split(",");
+        if (keys.length != 2) {
+            throw new LicenseException("配置文件内的激活码错误");
+        }
+
+        return activation(keys[0], keys[1]);
     }
 
     /**
      * 软件激活 校验
-     *
-     * @param key
-     * @return
-     * @throws LicenseException
      */
-    public boolean activation(String key) throws LicenseException, ParseException {
-        log("文件中激活码: " + key);
-        if (isEmpty(key)) {
-            throw new LicenseException("获取不到激活码");
-        }
-        String[] keys = key.split(",");
-
-        if (keys.length != 2) {
-            throw new LicenseException("配置文件内的激活码错误");
-        }
-        String hostCode = keys[0].replaceAll("-", "");
-        String license = keys[1];
+    private boolean activation(String hostCode, String license) throws LicenseException, ParseException {
+        log(String.format("文件中机器码: %s, 激活码: %s" ,hostCode, license));
 
         String cpuCode = getCPUCode();
         if (isEmpty(cpuCode)) {
             throw new LicenseException("获取硬件码失败.");
         }
 
-        String codeMd5 = generate(hostCode);
+        // 生成当时机器码
+        String checkHostCode = generate(hostCode.substring(5, 9));
+
+        if (!checkHostCode.equals(hostCode)){
+            throw new LicenseException("激活失败,机器码不一致");
+        }
         // 超时检测
-        dateCheck(hostCode.substring(4, 8));
+        dateCheck(hostCode.substring(5, 9));
+        // 生成激活码
+        String codeMd5 = generateMd5(hostCode);
         // 激活码比对
         if (!license.equals(codeMd5)) {
             throw new LicenseException("激活失败,错误的激活码");
@@ -81,9 +82,14 @@ public class License {
         return true;
     }
 
-    public String generate(String key) {
+    /**
+     * 激活码
+     * @param key
+     * @return
+     */
+    public String generateMd5(String key) {
         key = key.replaceAll("-", "");
-        // 时间戳
+        // 盐
         String head = key.substring(4, 8);
         String end = key.substring(key.length() - 8);
         String md5 = encrypt(end + head).substring(0, 16).toUpperCase();
@@ -138,7 +144,7 @@ public class License {
         return "";
     }
 
-    public boolean isEmpty(CharSequence str) {
+    private boolean isEmpty(CharSequence str) {
         return str == null || str.length() == 0;
     }
 
@@ -180,12 +186,12 @@ public class License {
         return sft.format(new Date());
     }
 
-    public void dateCheck(String dateCode) throws ParseException, LicenseException {
+    private void dateCheck(String dateCode) throws ParseException, LicenseException {
         SimpleDateFormat sft = new SimpleDateFormat("yyMM");
         Date date = sft.parse(dateCode);
         int days = (int) ((System.currentTimeMillis() - date.getTime()) / (1000 * 60 * 60 * 24));
 
-        if (days > 365){
+        if (days > 365 + 31){
             throw new LicenseException("软件授权时间超过一年，请重新申请授权码");
         }
     }

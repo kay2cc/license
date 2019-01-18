@@ -8,13 +8,15 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         License license = new License();
+        // 机器码
+        String lll = license.generate();
+        System.out.println("机器码> "+lll);
 
-//        license.dateCheck("1801");
 
+        // 激活码
+        String lic = license.generateMd5("BFEB-1901-C74EF687");
 
-//        String lic = license.generate();
-//
-//        license.setLicense(license.generate(lic));
+        //license.setLicense(lic);
         System.out.println("check: " +license.check());
 
     }
